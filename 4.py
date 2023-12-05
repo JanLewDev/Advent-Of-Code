@@ -12,8 +12,6 @@ ans = 0
 lines = data.split("\n")
 games = [line.strip().split(": ") for line in lines]
 
-cards = [1 for _ in range(len(games) + 1)]
-
 d = defaultdict(lambda: 1)
 
 for game in games:
@@ -27,7 +25,6 @@ for game in games:
             score += 1
 
     for i in range(idx+1, idx + score + 1):
-        cards[i] += cards[idx]
         d[i] += d[idx]
 
     # if score:
