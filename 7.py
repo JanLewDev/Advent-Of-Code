@@ -2,7 +2,7 @@ import sys
 with open(sys.argv[1]) as f:
     data = f.read()
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import cmp_to_key
 
 
@@ -14,39 +14,34 @@ def integers(string):
 def part1():
     ans = 0
 
-    cards = {'2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '8': 7, '9': 8, 'T': 9, 'J': 10, 'Q': 11, 'K': 12, 'A': 13, 'B': 14}
-
+    cards = "23456789TJQKA"
 
     def power(string):
-        d1 = defaultdict(int)
-        for card in cards:
-            if string.count(card) == 5:
+        hand = [j for i, j in Counter(string).most_common()]
+
+        match hand:
+            case [5]:
                 return 7
-            elif string.count(card) == 4:
+            case [4, 1]:
                 return 6
-            
-            if card in string:
-                d1[card] += string.count(card)
-        
-        mid = list(d1.values())
-        
-        if 2 in mid and 3 in mid:
-            return 5
-        if 3 in mid:
-            return 4
-        if mid.count(2) == 2:
-            return 3
-        if 2 in mid:
-            return 2
-        return 1
+            case [3, 2]:
+                return 5
+            case [3, 1, 1]:
+                return 4
+            case [2, 2, 1]:
+                return 3
+            case [2, 1, 1, 1]:
+                return 2
+            case _:
+                return 1
 
     def compare(x, y):
-        hand1, hand2 = x[0], y[0]
-        if power(hand1) == power(hand2):
+        x, y = x[0], y[0]
+        if power(x) == power(y):
             for i in range(5):
-                if hand1[i] != hand2[i]:
-                    return 1 if cards[hand1[i]] > cards[hand2[i]] else -1
-        return 1 if power(hand1) > power(hand2) else -1
+                if x[i] != y[i]:
+                    return 1 if cards.index(x[i]) > cards.index(y[i]) else -1
+        return 1 if power(x) > power(y) else -1
 
     lines = data.split("\n")
     hands = [line.strip().split(" ") for line in lines]
@@ -57,68 +52,42 @@ def part1():
     for i in range(len(hands)):
         ans += (i+1) * hands[i][1]
 
-
-
     print(f"answer is {ans}")
 
 
 def part2():
     ans = 0
 
-    cards = {'J': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'Q': 11, 'K': 12, 'A': 13, 'B': 14}
+    cards = "J23456789TQKA"
 
     def power(string):
-        d1 = defaultdict(int)
-        for card in cards:
-            if string.count(card) == 5:
-                return 7
-            
-            if card in string:
-                d1[card] += string.count(card)
-        
-        mid = list(d1.values())
-        # print(string, mid)
-        if d1['J']:
-            mid.remove(d1['J'])
-
-        scores = set()
-        for card in cards:
-            if card != 'J':
-                if string.count(card) + d1['J'] == 5:
-                    scores.add(7)
-                if string.count(card) + d1['J'] == 4:
-                    scores.add(6)
-        
-        if scores:
-            return max(scores)
-        
-        if 2 in mid and 3 in mid:
+        jokers = string.count('J')
+        string = string.replace('J', "")
+        hand = [j for i, j in Counter(string).most_common()]
+        if jokers == 5:
+            return 7
+        if hand[0] + jokers >= 5:
+            return 7
+        if hand[0] + jokers >= 4:
+            return 6
+        if hand == [3, 2] or (hand == [2, 2] and jokers):
             return 5
-        if mid.count(2) == 2 and d1['J'] >= 1:
-            return 5
-        if 1 in mid and 2 in mid and d1['J'] >= 2:
-            return 5
-        if 3 in mid:
+        if hand[0] + jokers >= 3:
             return 4
-        if 2 in mid and d1['J'] >= 1:
-            return 4
-        if 1 in mid and d1['J'] >= 2:
-            return 4
-        if mid.count(2) == 2:
+        if hand == [2, 2, 1] or (hand == [2, 1, 1] and jokers):
             return 3
-        if 2 in mid:
-            return 2
-        if 1 in mid and d1['J'] >= 1:
+        if hand[0] + jokers >= 2:
             return 2
         return 1
+        
 
     def compare(x, y):
-        hand1, hand2 = x[0], y[0]
-        if power(hand1) == power(hand2):
+        x, y = x[0], y[0]
+        if power(x) == power(y):
             for i in range(5):
-                if hand1[i] != hand2[i]:
-                    return 1 if cards[hand1[i]] > cards[hand2[i]] else -1
-        return 1 if power(hand1) > power(hand2) else -1
+                if x[i] != y[i]:
+                    return 1 if cards.index(x[i]) > cards.index(y[i]) else -1
+        return 1 if power(x) > power(y) else -1
 
     lines = data.split("\n")
     hands = [line.strip().split(" ") for line in lines]
