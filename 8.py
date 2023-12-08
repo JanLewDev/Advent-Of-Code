@@ -3,6 +3,8 @@ with open(sys.argv[1]) as f:
     data = f.read()
 
 from collections import defaultdict
+from itertools import cycle
+import math
 
 def integers(string):
     numbers = [int(x) for x in string.split() if x.isnumeric()]
@@ -11,9 +13,7 @@ def integers(string):
 def p1():
     graph = {}
 
-    ans = 0
-    lines = data.split("\n\n")
-    instructions, nodes = lines
+    instructions, nodes = data.split("\n\n")
     nodes = nodes.split("\n")
 
     for node in nodes:
@@ -41,9 +41,7 @@ def p1():
 def p2():
     graph = {}
 
-    ans = 0
-    lines = data.split("\n\n")
-    instructions, nodes = lines
+    instructions, nodes = data.split("\n\n")
     nodes = nodes.split("\n")
     starts = []
 
@@ -58,34 +56,18 @@ def p2():
 
 
     cycles = []
-    offsets = []
-    lengths = []
     for node in starts:
         visited = []
-        copy = node
-        step = 0
-        run = True
-        while copy != node or run: 
-            prev = copy
-            if instructions[step % len(instructions)] == 'L':
-                copy = graph[copy][0]
-            else:    
-                copy = graph[copy][1]
-
-            if copy in visited and prev[-1] == 'Z':
-                # print(node, visited.index(copy), step)
-                offsets.append(visited.index(copy))
-                lengths.append(step)
+        for steps, (idx, dir) in enumerate(cycle(enumerate(instructions))):
+            prev, node = node, graph[node][dir == "R"]
+            visited.append((node, idx))
+            if prev[-1] == 'Z' and (node, idx) in visited:
+                cycles.append(steps)
                 break
-            visited.append(copy)
-            step += 1
-            run = False
+            # print(visited)
         
-        cycles.append(step)
-        
-    import math
 
-    print(f"answer is {math.lcm(*lengths)}")
+    print(f"answer is {math.lcm(*cycles)}")
 
 
 p2()
