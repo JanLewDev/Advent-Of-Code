@@ -19,22 +19,22 @@ for i in range(rows):
     for j in range(columns):
         if tunnels[i][j] == 'S':
             starting = (i, j)
-            up_valid = (tunnels[i-1][j] in ['|','7','F'])
-            right_valid = (tunnels[i][j+1] in ['-','7','J'])
-            down_valid = (tunnels[i+1][j] in ['|','L','J'])
-            left_valid = (tunnels[i][j-1] in ['-','L','F'])
-            if up_valid and down_valid:
+            up = (tunnels[i-1][j] in "|F7")
+            right = (tunnels[i][j+1] in "-J7")
+            down = (tunnels[i+1][j] in "|LJ")
+            left = (tunnels[i][j-1] in "-LF")
+            if up and down:
                 tunnels[i][j] = '|'
-            elif up_valid and right_valid:
+            elif up and right:
                 tunnels[i][j] = 'L'
-            elif up_valid and left_valid:
+            elif up and left:
                 tunnels[i][j] = 'J'
-            elif down_valid and right_valid:
+            elif down and right:
                 tunnels[i][j] = 'F'
-            elif down_valid and left_valid:
+            elif down and left:
                 tunnels[i][j] = '7'
-            elif left_valid and right_valid:
-                tunnels[i][j] ='-'
+            elif left and right:
+                tunnels[i][j] = '-'
 
 for x, y in dirs:
     if tunnels[starting[0]+x][starting[1]+y] != '.':
