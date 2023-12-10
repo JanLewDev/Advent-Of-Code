@@ -10,8 +10,6 @@ def integers(string):
 
 dirs = {(0, 1), (1, 0), (0, -1), (-1, 0)}
 
-ans = 0
-
 lines = data.split("\n")
 tunnels = [[i for i in j] for j in lines]
 rows = len(lines)
@@ -43,9 +41,11 @@ for x, y in dirs:
         next = (starting[0]+x, starting[1]+y)
         break
 
+path = {starting}
 prev = starting
 while (next[0], next[1]) != starting:
     x, y = next
+    path.add(next)
     # print(prev, next, tunnels[next[0]][next[1]])
     if tunnels[x][y] == '|':
         if (x+1, y) != prev:
@@ -77,10 +77,8 @@ while (next[0], next[1]) != starting:
             prev, next = next, (x+1, y)
         else:
             prev, next = next, (x, y+1)
-
-    ans += 1
     
-print(f"answer is {ans//2 + ans%2}")
+print(f"answer is {len(path) // 2}")
 
 # visibility = {'-':'─', '|':'│', 'L': '└', 'J': '┘', '7': '┐', 'F': '┌'}
 # for i in range(rows):
@@ -89,7 +87,20 @@ print(f"answer is {ans//2 + ans%2}")
 #             tunnels[i][j] = visibility[tunnels[i][j]]
 # print('\n'.join([''.join(i) for i in tunnels]))
 
+# This is a much shorter solution for part two
+ans = 0
+for i in range(rows):
+    inside = False
+    for j in range(columns):
+        curr = (i, j)
+        if curr not in path:
+            ans += inside
+        elif tunnels[i][j] in "|F7":
+            inside = not inside
     
+print(f"answer is {ans}")  
+
+# I left this solution here as it was my first approach
 # making the new tunnels grid by extrapolating each entry to 3x3
 newrows = 3*rows
 newcolumns = 3*columns
