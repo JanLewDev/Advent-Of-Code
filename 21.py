@@ -78,11 +78,6 @@ def p2():
     # print(steps % R + R + R, bfs(steps % R + R + R))
     # hard-coded after running the above
     seen = [3738, 33270, 92194]
-    diff = [seen[i+1] - seen[i] for i in range(2)]
-    a = (diff[1] - diff[0]) // 2
-    b = diff[0] - 3 * a
-    c = seen[0] - a - b
-    print(a * 202301**2 + b * 202301 + c)
 
     # the answer is a quadratic function of steps, so we can use interpolation
     from scipy.interpolate import lagrange
