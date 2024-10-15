@@ -1,1 +1,12 @@
-Here are my solutions to Advent of Code 2023 problems in Python and C++;
+## Advent of Code checklist
+- [ ] 2024
+- [x] 2023
+
+
+| Year | Stars⭐ |
+|------|---------|
+| 2024 | __/50   |
+| 2023 | 50/50   |
+| 2022 | 4/50    |
+|      |         |
+|      |         |
